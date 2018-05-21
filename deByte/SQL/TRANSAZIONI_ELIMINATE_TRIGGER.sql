@@ -1,0 +1,2 @@
+/*Riempie le transazioni eliminate*/
+CREATE TRIGGER TransazioneEliminata AFTER DELETE ON Transazioni REFERENCING OLD AS O FOR EACH ROW IF (O.ID NOT IN ( 	SELECT ID FROM Transazioni) ) THEN INSERT INTO Transazioni_Eliminate 	VALUES (O.ID, O.Mittente, O.Destinatario, O.Importo, O.Valuta, O.Tipo, O.Descrizione, O.Timestamp, O.Stato); END IF

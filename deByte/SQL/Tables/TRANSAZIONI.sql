@@ -1,0 +1,15 @@
+CREATE TABLE Transazioni (
+	ID INTEGER NOT NULL PRIMARY KEY,
+	Mittente VARCHAR(255) NOT NULL REFERENCES Utenti(Utente),
+	Destinatario VARCHAR(255) NOT NULL REFERENCES Utenti(Utente),
+	Importo DECIMAL(8,2) NOT NULL,
+	Valuta VARCHAR(30) NOT NULL,
+	Tipo CHAR(2) NOT NULL,
+	Descrizione VARCHAR(30) NOT NULL,
+	Timestamp TIMESTAMP NOT NULL,
+	Stato CHAR(1) NOT NULL DEFAULT 'N',
+	CONSTRAINT ValidoID CHECK (ID>0),
+	CONSTRAINT ValidoImporto CHECK (Importo>0),
+	CONSTRAINT ValidoTipo CHECK (Tipo IN ('SP', 'SA')),
+	CONSTRAINT ValidoStato CHECK (Stato IN ('N', 'S'))
+);

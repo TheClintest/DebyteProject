@@ -1,0 +1,58 @@
+CREATE TABLE Utenti (
+	Utente VARCHAR(255) NOT NULL PRIMARY KEY,
+	Password VARCHAR(30) NOT NULL,
+	Nome VARCHAR(30) NOT NULL,
+	PP_Riferimento VARCHAR(255)
+);
+
+CREATE TABLE Gruppi (
+	ID INTEGER NOT NULL PRIMARY KEY,
+	Nome VARCHAR(30) NOT NULL,
+	CONSTRAINT ValidoID CHECK (ID>0)
+);
+
+CREATE TABLE GruppiUtenti (
+	ID INTEGER NOT NULL REFERENCES Gruppi(ID),
+	Utente VARCHAR(255) NOT NULL REFERENCES Utenti(Utente),
+	Is_in CHAR(1) CHECK (Is_in IN ('Y', 'N')),
+	UNIQUE (ID, Utente)
+);
+
+CREATE TABLE Transazioni (
+	ID INTEGER NOT NULL PRIMARY KEY,
+	Mittente VARCHAR(255) NOT NULL REFERENCES Utenti(Utente),
+	Destinatario VARCHAR(255) NOT NULL REFERENCES Utenti(Utente),
+	Importo DECIMAL(8,2) NOT NULL,
+	Valuta VARCHAR(30) NOT NULL,
+	Tipo CHAR(2) NOT NULL,
+	Descrizione VARCHAR(30) NOT NULL,
+	Timestamp TIMESTAMP NOT NULL,
+	Stato CHAR(1) NOT NULL DEFAULT 'N',
+	CONSTRAINT ValidoID CHECK (ID>0),
+	CONSTRAINT ValidoImporto CHECK (Importo>0),
+	CONSTRAINT ValidoTipo CHECK (Tipo IN ('SP', 'SA')),
+	CONSTRAINT ValidoStato CHECK (Stato IN ('N', 'S'))
+);
+
+CREATE TABLE Transazioni_Eliminate (
+	ID INTEGER NOT NULL PRIMARY KEY,
+	Mittente VARCHAR(255) NOT NULL REFERENCES Utenti(Utente),
+	Destinatario VARCHAR(255) NOT NULL REFERENCES Utenti(Utente),
+	Importo DECIMAL(8,2) NOT NULL,
+	Valuta VARCHAR(30) NOT NULL,
+	Tipo CHAR(2) NOT NULL,
+	Descrizione VARCHAR(30) NOT NULL,
+	Timestamp TIMESTAMP NOT NULL,
+	Stato CHAR(1) NOT NULL DEFAULT 'N'
+);
+
+CREATE TABLE Notifiche (
+	Utente VARCHAR(255) NOT NULL,
+	Tipologia INTEGER NOT NULL,
+	Info VARCHAR(255),
+	Stato CHAR(1) NOT NULL CONSTRAINT ValidoStato DEFAULT 'N',
+	CONSTRAINT ValidoTipologia CHECK (Tipologia BETWEEN 1 AND ?),
+	CONSTRAINT ValidoStato CHECK (Stato IN ('N', 'S')),
+);
+/*
+	
